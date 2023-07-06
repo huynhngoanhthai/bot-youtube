@@ -11,7 +11,7 @@ const scanUk = require("./bot-youtube-uk/scanData");
 const scanInd = require("./bot-youtube-ind/scanData");
 const scanMalay = require("./bot-youtube-malay/scanData");
 const scanAus = require("./bot-youtube-aus/scanData"); // chua
-// const scanTw = require("./bot-youtube-tw/scanData"); // chua
+// const scanTw = require("./bot-youtube-tw/scanData"); // chua s 
 
 
 
@@ -30,11 +30,14 @@ schedule.scheduleJob("1 0 * * *", async () => {
 // return;
 //weeklyJob xoa het du lieu trong listId.txt 22:00
 schedule.scheduleJob("0 22 */3 * *", () => {
-  fs.writeFileSync("listId.txt", "", (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
+  const allowedCountries = ['th', 'ger', 'fra', 'us', 'uk', 'phi', 'ind', 'malay', 'aus'];
+  allowedCountries.forEach(i => {
+    fs.writeFileSync("./bot-youtube-" + i + "/listId.txt", "", (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
   });
 });
 
@@ -61,8 +64,8 @@ const data = async (country) => {
   const day = String(currentDate.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
   return await readFileData(formattedDate, "bot-youtube-" + country);
+};
 
-}
 app.get("/api/crawler/youtube-short/:country", async (req, res) => {
   const { country } = req.params;
   const allowedCountries = ['th', 'ger', 'fra', 'us', 'uk', 'phi', 'ind', 'malay', 'aus', 'tw'];
@@ -74,7 +77,7 @@ app.get("/api/crawler/youtube-short/:country", async (req, res) => {
   };
   // console.log(await data(country));
 
-  res.json({
+  return res.json({
     success: true,
     data: await data(country)
   });
@@ -82,17 +85,19 @@ app.get("/api/crawler/youtube-short/:country", async (req, res) => {
 });
 
 
-app.get("/api/data/:filename", async (req, res) => {
+app.get("/api/crawler/youtube-short/:country/:filename", async (req, res) => {
+  const { country, filename } = req.params;
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
   const formattedDate = `data/${year}-${month}-${day}.json`;
-  const date = req.params.filename | formattedDate;
-  const data = await readFileData(date);
+  const date = filename || formattedDate;
+  const bot = "bot-youtube-" + country;
+  const data = await readFileData(date, bot);
 
-  res.json({
+  return res.json({
     success: true,
     data,
   });
