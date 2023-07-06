@@ -7,7 +7,7 @@ const moment = require("moment");
 const CONTAINS = require("./contains");
 
 const writeListVideoId = (listVideoId) => {
-  fs.writeFileSync("./bot-youtube-us/listId.txt", listVideoId, (err) => {
+  fs.writeFileSync("./bot-youtube-vn/listId.txt", listVideoId, (err) => {
     if (err) {
       console.error(err);
       return;
@@ -20,7 +20,7 @@ const writeFileJSON = (text) => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-us/data/${year}-${month}-${day}.json`;
+  const formattedDate = `./bot-youtube-vn/data/${year}-${month}-${day}.json`;
   fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
     if (err) {
       console.error(err);
@@ -34,7 +34,7 @@ const readFileListJSONVideos = () => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-us/data/${year}-${month}-${day}.json`;
+  const formattedDate = `./bot-youtube-vn/data/${year}-${month}-${day}.json`;
   return new Promise((resolve, reject) => {
     fs.readFile(formattedDate, "utf8", (err, data) => {
       if (err) {
@@ -50,7 +50,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile("./bot-youtube-us/listId.txt", "utf8", (err, data) => {
+    fs.readFile("./bot-youtube-vn/listId.txt", "utf8", (err, data) => {
       if (err) {
         resolve([]);
         return;
