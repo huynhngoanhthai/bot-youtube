@@ -1,0 +1,7 @@
+node_modules/
+a.js
+test-bot-telegram.js
+test.js
+.env
+yarn.lock
+*/data/*.json
