@@ -2,16 +2,19 @@ require("dotenv").config();
 const schedule = require("node-schedule");
 const fs = require("fs");
 const express = require("express");
-const scanTh = require("./bot-youtube-th/scanData");
-const scanPhi = require("./bot-youtube-phi/scanData");
+const scanAus = require("./bot-youtube-aus/scanData");
 const scanFra = require("./bot-youtube-fra/scanData");
-const scanUs = require("./bot-youtube-us/scanData");
 const scanGer = require("./bot-youtube-ger/scanData");
-const scanUk = require("./bot-youtube-uk/scanData");
 const scanInd = require("./bot-youtube-ind/scanData");
 const scanMalay = require("./bot-youtube-malay/scanData");
-const scanAus = require("./bot-youtube-aus/scanData"); // chua
-// const scanTw = require("./bot-youtube-tw/scanData"); // chua s 
+const scanPhi = require("./bot-youtube-phi/scanData");
+const scanSg = require("./bot-youtube-sg/scanData");
+const scanTh = require("./bot-youtube-th/scanData");
+const scanTw = require("./bot-youtube-tw/scanData");
+const scanUk = require("./bot-youtube-uk/scanData");
+const scanUs = require("./bot-youtube-us/scanData");
+const scanVn = require("./bot-youtube-vn/scanData");
+
 
 
 
@@ -22,11 +25,31 @@ const port = parseInt(process.env.PORT || 3000);
 
 //dailyJob 00:01
 schedule.scheduleJob("1 0 * * *", async () => {
-  scanTh();
-  scanInd();
-  scanPhi();
   scanAus();
+  scanFra();
+  scanGer();
+  scanInd();
+  scanMalay();
+  scanPhi();
+  scanSg();
+  scanTh();
+  scanTw();
+  scanUk();
+  scanUs();
+  scanVn();
 });
+
+// // this sample scanData but slow and it have like,sub increate suggest by youtube
+// require("./bot-youtube-vn/modelsTrainingAccount")();
+// require("./bot-youtube-sg/modelsTrainingAccount")(); 
+// require("./bot-youtube-malay/modelsTrainingAccount")();
+// require("./bot-youtube-tw/modelsTrainingAccount")();
+// require("./bot-youtube-ind/modelsTrainingAccount")();
+// require("./bot-youtube-fra/modelsTrainingAccount")();
+// require("./bot-youtube-phi/modelsTrainingAccount")();
+// require("./bot-youtube-th/modelsTrainingAccount")();
+// require("./bot-youtube-ger/modelsTrainingAccount")();
+
 // return;
 //weeklyJob xoa het du lieu trong listId.txt 22:00
 schedule.scheduleJob("0 22 */3 * *", () => {

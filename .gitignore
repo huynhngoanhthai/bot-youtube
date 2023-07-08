@@ -5,3 +5,5 @@ test.js
 .env
 yarn.lock
 */data/*.json
+cld3
+*.log
