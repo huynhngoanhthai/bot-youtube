@@ -40,15 +40,15 @@ schedule.scheduleJob("1 0 * * *", async () => {
 });
 
 // // this sample scanData but slow and it have like,sub increate suggest by youtube
-// require("./bot-youtube-vn/modelsTrainingAccount")();
-// require("./bot-youtube-sg/modelsTrainingAccount")(); 
-// require("./bot-youtube-malay/modelsTrainingAccount")();
-// require("./bot-youtube-tw/modelsTrainingAccount")();
-// require("./bot-youtube-ind/modelsTrainingAccount")();
-// require("./bot-youtube-fra/modelsTrainingAccount")();
-// require("./bot-youtube-phi/modelsTrainingAccount")();
-// require("./bot-youtube-th/modelsTrainingAccount")();
-// require("./bot-youtube-ger/modelsTrainingAccount")();
+require("./bot-youtube-vn/modelsTrainingAccount")();
+require("./bot-youtube-sg/modelsTrainingAccount")(); 
+require("./bot-youtube-malay/modelsTrainingAccount")();
+require("./bot-youtube-tw/modelsTrainingAccount")();
+require("./bot-youtube-ind/modelsTrainingAccount")();
+require("./bot-youtube-fra/modelsTrainingAccount")();
+require("./bot-youtube-phi/modelsTrainingAccount")();
+require("./bot-youtube-th/modelsTrainingAccount")();
+require("./bot-youtube-ger/modelsTrainingAccount")();
 
 // return;
 //weeklyJob xoa het du lieu trong listId.txt 22:00

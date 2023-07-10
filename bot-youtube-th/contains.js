@@ -7,7 +7,7 @@ module.exports =  {
     "ID_GROUP":11,
     "BROWSER": "/snap/bin/chromium",
     "PORT": 5000,
-    "EMAIL": "mkim62996@gmail.com",
+    "EMAIL": "shortsthai@gmail.com",
     "PASSWORD": "Thai@123",
     "SERVER": '?persist_gl=th&gl=TH',
     "PROXY": '--proxy-server=socks4://110.78.186.60:4145',

@@ -5,8 +5,9 @@ const requestBody = require("./request");
 const axios = require("axios");
 const moment = require("moment");
 const CONTAINS = require("./contains");
+const sendMessageToTelegram = require("../utils/sendMessageToTelegram");
 const writeListVideoId = (listVideoId) => {
-  fs.writeFileSync("./bot-youtube-fra/listId.txt", listVideoId, (err) => {
+  fs.writeFileSync(__dirname + "/listId.txt", listVideoId, (err) => {
     if (err) {
       console.error(err);
       return;
@@ -19,7 +20,7 @@ const writeFileJSON = (text) => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-fra/data/${year}-${month}-${day}.json`;
+  const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
   fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
     if (err) {
       console.error(err);
@@ -33,7 +34,7 @@ const readFileListJSONVideos = () => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-fra/data/${year}-${month}-${day}.json`;
+  const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
   return new Promise((resolve, reject) => {
     fs.readFile(formattedDate, "utf8", (err, data) => {
       if (err) {
@@ -49,7 +50,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile("./bot-youtube-fra/listId.txt", "utf8", (err, data) => {
+    fs.readFile(__dirname + "/listId.txt", "utf8", (err, data) => {
       if (err) {
         resolve([]);
         return;
@@ -185,6 +186,8 @@ const getShortVideoById = async (videoId) => {
   } catch (error) {
 
     console.log("Error:", error);
+    sendMessageToTelegram(`loi scan  ${__dirname.split("/")[5]}`);
+
     return {
       video: [
         {
@@ -197,7 +200,7 @@ const getShortVideoById = async (videoId) => {
 
 const scan = async () => {
   try {
-    // sendMessageToTelegram(`bắt đầu scan sl: ${CONTAINS.SCANS}`);
+    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/")[5]} sl: ${CONTAINS.SCANS}`);
     const startTime = performance.now();
     const StealthPlugin = require('puppeteer-extra-plugin-stealth')
     puppeteer.use(StealthPlugin())
@@ -273,10 +276,14 @@ const scan = async () => {
     const endTime = performance.now();
     const executionTime = (endTime - startTime) / 1000;
     console.log(executionTime);
+    sendMessageToTelegram(`scan  ${__dirname.split("/")[5]} xong`);
+
   } catch (error) {
     console.log("Error: ", error);
     await browser.close();
     await scan();
+    sendMessageToTelegram(`reset scan  ${__dirname.split("/")[5]}`);
+
   }
 };
 module.exports = scan;

@@ -8,7 +8,7 @@ const CONTAINS = require("./contains");
 const { detect } = require('langdetect');
 
 const writeListVideoId = (listVideoId) => {
-  fs.writeFileSync("./bot-youtube-th/listId.txt", listVideoId, (err) => {
+  fs.writeFileSync(__dirname+"/listId.txt", listVideoId, (err) => {
     if (err) {
       console.error(err);
       return;
@@ -21,7 +21,7 @@ const writeFileJSON = (text) => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-th/data/${year}-${month}-${day}.json`;
+  const formattedDate =__dirname+ `/data/${year}-${month}-${day}.json`;
   fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
     if (err) {
       console.error(err);
@@ -35,7 +35,7 @@ const readFileListJSONVideos = () => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = `./bot-youtube-th/data/${year}-${month}-${day}.json`;
+  const formattedDate = __dirname+`/data/${year}-${month}-${day}.json`;
   return new Promise((resolve, reject) => {
     fs.readFile(formattedDate, "utf8", (err, data) => {
       if (err) {
@@ -51,7 +51,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile("./bot-youtube-th/listId.txt", "utf8", (err, data) => {
+    fs.readFile(__dirname+"/listId.txt", "utf8", (err, data) => {
       if (err) {
         resolve([]);
         return;
@@ -186,6 +186,8 @@ const getShortVideoById = async (videoId) => {
   } catch (error) {
 
     console.log("Error:", error);
+    sendMessageToTelegram(`có lỗi khi scan ${__dirname.split("/")[5]}`);
+
     return {
       video: [
         {
@@ -198,7 +200,7 @@ const getShortVideoById = async (videoId) => {
 
 const scan = async () => {
   try {
-    // sendMessageToTelegram(`bắt đầu scan sl: ${process.env.SCANS}`);
+    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/")[5]} sl: ${process.env.SCANS}`);
     const startTime = performance.now();
     var browser = await puppeteer.launch({
       headless: false,
@@ -270,14 +272,17 @@ const scan = async () => {
     writeFileJSON(fileJson);
     writeListVideoId(listVideoId.toString());
     await browser.close();
-
+    
     const endTime = performance.now();
     const executionTime = (endTime - startTime) / 1000;
     console.log(executionTime);
+    sendMessageToTelegram(` scan ${__dirname.split("/")[5]} xong ${executionTime}`);
   } catch (error) {
     console.log("Error: ", error);
     await browser.close();
+    sendMessageToTelegram(`reset scan ${__dirname.split("/")[5]}`);
     await scan();
+    
   }
 };
 module.exports = scan;

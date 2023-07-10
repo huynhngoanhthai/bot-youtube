@@ -5,9 +5,9 @@ const requestBody = require("./request");
 const axios = require("axios");
 const moment = require("moment");
 const contains = require("./contains");
-
+const sendMessageToTelegram = require("../utils/sendMessageToTelegram")
 const writeListVideoId = (listVideoId) => {
-    fs.writeFileSync("./bot-youtube-fra/listId.txt", listVideoId, (err) => {
+    fs.writeFileSync(__dirname + "/listId.txt", listVideoId, (err) => {
         if (err) {
             console.error(err);
             return;
@@ -20,7 +20,7 @@ const writeFileJSON = (text) => {
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
 
-    const formattedDate = `./bot-youtube-fra/data/${year}-${month}-${day}.json`;
+    const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
     fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
         if (err) {
             console.error(err);
@@ -34,7 +34,7 @@ const readFileListJSONVideos = () => {
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
 
-    const formattedDate = `./bot-youtube-fra/data/${year}-${month}-${day}.json`;
+    const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
     return new Promise((resolve, reject) => {
         fs.readFile(formattedDate, "utf8", (err, data) => {
             if (err) {
@@ -50,7 +50,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
     return new Promise((resolve, reject) => {
-        fs.readFile("./bot-youtube-fra/listId.txt", "utf8", (err, data) => {
+        fs.readFile(__dirname + "/listId.txt", "utf8", (err, data) => {
             if (err) {
                 resolve([]);
                 return;
@@ -113,7 +113,7 @@ const checkVerified = async (link) => {
 const detectLanguage = async (text) => {
     const cld3 = await import('cld3');
     // models dau tao bo ngon ngu thu 2 ra
-    const result = cld3.getLanguage(text)?.filter((i) =>  i?.language == 'fr');
+    const result = cld3.getLanguage(text)?.filter((i) => i?.language == 'fr');
     // console.log(cld3.getLanguage(text));
     if (!result?.length == 0)
         return true;
@@ -188,6 +188,8 @@ const getShortVideoById = async (videoId) => {
     } catch (error) {
 
         console.log("Error:", error);
+        sendMessageToTelegram(`loi scan  ${__dirname.split("/")[5]}`);
+
         return {
             video: [
                 {
@@ -200,7 +202,7 @@ const getShortVideoById = async (videoId) => {
 
 const scan = async () => {
     try {
-        // sendMessageToTelegram(`bắt đầu scan sl: ${contains.SCANS}`);
+        sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/")[5]} sl: ${contains.SCANS}`);
         const startTime = performance.now();
         const StealthPlugin = require('puppeteer-extra-plugin-stealth')
         puppeteer.use(StealthPlugin())
@@ -257,7 +259,7 @@ const scan = async () => {
 
             if (!listVideoId.includes(videoID)) {
                 const video = await getShortVideoById(videoID);
-                if (video.lang) {                   
+                if (video.lang) {
                     // use click like
                     await page.evaluate(() => {
                         const reelVideo = document.querySelector('ytd-reel-video-renderer.reel-video-in-sequence[is-active=""]');
@@ -284,7 +286,7 @@ const scan = async () => {
                     console.log(video);
                     count++;
                     countReset = 0;
-                    
+
                     await page.waitForTimeout(1000);
                     continue;
                 }
@@ -300,10 +302,14 @@ const scan = async () => {
         const endTime = performance.now();
         const executionTime = (endTime - startTime) / 1000;
         console.log(executionTime);
+        sendMessageToTelegram(`scan  ${__dirname.split("/")[5]} xong`);
+
     } catch (error) {
         console.log("Error: ", error);
         await browser.close();
         await scan();
+        sendMessageToTelegram(`reset scan  ${__dirname.split("/")[5]}`);
+
     }
 };
 
