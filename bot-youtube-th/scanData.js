@@ -6,6 +6,7 @@ const axios = require("axios");
 const moment = require("moment");
 const CONTAINS = require("./contains");
 const { detect } = require('langdetect');
+const getCategory = require("../utils/getCategory");
 
 const writeListVideoId = (listVideoId) => {
   fs.writeFileSync(__dirname+"/listId.txt", listVideoId, (err) => {
@@ -159,10 +160,15 @@ const getShortVideoById = async (videoId) => {
         .channelThumbnail?.thumbnails[2].url;
     const channel = res.data.overlay.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer
       .channelTitleText?.runs[0].text;
-    const verified = await checkVerified(channel);
+ 
     const origin_link = "https://www.youtube.com/shorts/" + videoId;
 
     const lang = detectLanguage(title) || detectLanguage(username); 
+    let verified,  category;
+        await Promise.all([
+            verified = await checkVerified(channel),
+           
+            category = await getCategory(origin_link)]);
     return {
       title: title,
       id: videoId,
@@ -182,6 +188,7 @@ const getShortVideoById = async (videoId) => {
       verified,
       origin_link,
       lang,
+      category
     };
   } catch (error) {
 

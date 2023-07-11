@@ -5,7 +5,8 @@ const requestBody = require("./request");
 const axios = require("axios");
 const moment = require("moment");
 const contains = require("./contains");
-const sendMessageToTelegram = require("../utils/sendMessageToTelegram")
+const sendMessageToTelegram = require("../utils/sendMessageToTelegram");
+const getCategory = require("../utils/getCategory");
 
 
 const writeListVideoId = (listVideoId) => {
@@ -162,10 +163,14 @@ const getShortVideoById = async (videoId) => {
         .channelThumbnail?.thumbnails[2].url;
     const channel = res.data.overlay.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer
       .channelTitleText?.runs[0].text;
-    const verified = await checkVerified(channel);
+ 
     const origin_link = "https://www.youtube.com/shorts/" + videoId;
 
-    const lang = await detectLanguage(title);
+    let verified, lang, category;
+    await Promise.all([
+      verified = await checkVerified(channel),
+      lang = await detectLanguage(title),
+      category = await getCategory(origin_link)]);
     return {
       title: title,
       id: videoId,
@@ -185,6 +190,7 @@ const getShortVideoById = async (videoId) => {
       verified,
       origin_link,
       lang,
+      category
     };
   } catch (error) {
 

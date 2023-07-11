@@ -6,9 +6,11 @@ const requestBody = require("./request");
 const axios = require("axios");
 const moment = require("moment");
 const contains = require("./contains");
+const getCategory = require("../utils/getCategory");
+
 
 const writeListVideoId = (listVideoId) => {
-    fs.writeFileSync(__dirname+"/listId.txt", listVideoId, (err) => {
+    fs.writeFileSync(__dirname + "/listId.txt", listVideoId, (err) => {
         if (err) {
             console.error(err);
             return;
@@ -21,7 +23,7 @@ const writeFileJSON = (text) => {
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
 
-    const formattedDate = __dirname+`/data/${year}-${month}-${day}.json`;
+    const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
     fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
         if (err) {
             console.error(err);
@@ -35,7 +37,7 @@ const readFileListJSONVideos = () => {
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const day = String(currentDate.getDate()).padStart(2, "0");
 
-    const formattedDate = __dirname+`/data/${year}-${month}-${day}.json`;
+    const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
     return new Promise((resolve, reject) => {
         fs.readFile(formattedDate, "utf8", (err, data) => {
             if (err) {
@@ -51,7 +53,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
     return new Promise((resolve, reject) => {
-        fs.readFile(__dirname+"/listId.txt", "utf8", (err, data) => {
+        fs.readFile(__dirname + "/listId.txt", "utf8", (err, data) => {
             if (err) {
                 resolve([]);
                 return;
@@ -121,6 +123,7 @@ const detectLanguage = async (text) => {
     return false;
 };
 
+
 const getShortVideoById = async (videoId) => {
     try {
         const req = requestBody(videoId);
@@ -162,10 +165,13 @@ const getShortVideoById = async (videoId) => {
                 .channelThumbnail?.thumbnails[2].url;
         const channel = res.data.overlay.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer
             .channelTitleText?.runs[0].text;
-        const verified = await checkVerified(channel);
         const origin_link = "https://www.youtube.com/shorts/" + videoId;
 
-        const lang = await detectLanguage(title);
+        let verified, lang, category;
+        await Promise.all([
+            verified = await checkVerified(channel),
+            lang = await detectLanguage(title),
+            category = await getCategory(origin_link)]);
         return {
             title: title,
             id: videoId,
@@ -185,6 +191,7 @@ const getShortVideoById = async (videoId) => {
             verified,
             origin_link,
             lang,
+            category,
         };
     } catch (error) {
 
@@ -260,7 +267,7 @@ const scan = async () => {
 
             if (!listVideoId.includes(videoID)) {
                 const video = await getShortVideoById(videoID);
-                if (video.lang) {                   
+                if (video.lang) {
                     // use click like
                     await page.evaluate(() => {
                         const reelVideo = document.querySelector('ytd-reel-video-renderer.reel-video-in-sequence[is-active=""]');
@@ -287,7 +294,7 @@ const scan = async () => {
                     console.log(video);
                     count++;
                     countReset = 0;
-                    
+
                     await page.waitForTimeout(1000);
                     continue;
                 }
