@@ -283,7 +283,7 @@ const scan = async () => {
     const endTime = performance.now();
     const executionTime = (endTime - startTime) / 1000;
     console.log(executionTime);
-    sendMessageToTelegram(` scan ${__dirname.split("/").pop()} xong ${executionTime}`);
+    sendMessageToTelegram(` scan ${__dirname.split("/").pop()} xong`);
   } catch (error) {
     console.log("Error: ", error);
     await browser.close();
