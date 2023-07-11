@@ -193,7 +193,7 @@ const getShortVideoById = async (videoId) => {
   } catch (error) {
 
     console.log("Error:", error);
-    sendMessageToTelegram(`co loi ${__dirname.split("/")[5]}`);
+    sendMessageToTelegram(`co loi ${__dirname.split("/").pop()}`);
     return {
       video: [
         {
@@ -207,7 +207,7 @@ const getShortVideoById = async (videoId) => {
 
 const scan = async () => {
   try {
-    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/")[5]} sl: ${contains.SCANS}`);
+    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/").pop()} sl: ${contains.SCANS}`);
     const startTime = performance.now();
     const StealthPlugin = require('puppeteer-extra-plugin-stealth')
     puppeteer.use(StealthPlugin())
@@ -311,7 +311,7 @@ const scan = async () => {
     const endTime = performance.now();
     const executionTime = (endTime - startTime) / 1000;
     console.log(executionTime);
-    sendMessageToTelegram(`scan ${__dirname.split("/")[5]} xong  ${executionTime}`);
+    sendMessageToTelegram(`scan ${__dirname.split("/").pop()} xong  ${executionTime}`);
 
   } catch (error) {
     console.log("Error: ", error);

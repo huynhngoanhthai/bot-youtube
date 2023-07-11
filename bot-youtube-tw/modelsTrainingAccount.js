@@ -196,7 +196,7 @@ const getShortVideoById = async (videoId) => {
     } catch (error) {
 
         console.log("Error:", error);
-        sendMessageToTelegram(`co loi ${__dirname.split("/")[5]}`);
+        sendMessageToTelegram(`co loi ${__dirname.split("/").pop()}`);
 
         return {
             video: [
@@ -316,7 +316,7 @@ const scan = async () => {
         console.log("Error: ", error);
         await browser.close();
         await scan();
-        sendMessageToTelegram(`bắt đầu reset ${__dirname.split("/")[5]}`);
+        sendMessageToTelegram(`bắt đầu reset ${__dirname.split("/").pop()}`);
 
     }
 };

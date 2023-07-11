@@ -193,7 +193,7 @@ const getShortVideoById = async (videoId) => {
   } catch (error) {
 
     console.log("Error:", error);
-    sendMessageToTelegram(`có lỗi khi scan ${__dirname.split("/")[5]}`);
+    sendMessageToTelegram(`có lỗi khi scan ${__dirname.split("/").pop()}`);
 
     return {
       video: [
@@ -207,7 +207,7 @@ const getShortVideoById = async (videoId) => {
 
 const scan = async () => {
   try {
-    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/")[5]} sl: ${process.env.SCANS}`);
+    sendMessageToTelegram(`bắt đầu scan ${__dirname.split("/").pop()} sl: ${process.env.SCANS}`);
     const startTime = performance.now();
     var browser = await puppeteer.launch({
       headless: false,
@@ -283,11 +283,11 @@ const scan = async () => {
     const endTime = performance.now();
     const executionTime = (endTime - startTime) / 1000;
     console.log(executionTime);
-    sendMessageToTelegram(` scan ${__dirname.split("/")[5]} xong ${executionTime}`);
+    sendMessageToTelegram(` scan ${__dirname.split("/").pop()} xong ${executionTime}`);
   } catch (error) {
     console.log("Error: ", error);
     await browser.close();
-    sendMessageToTelegram(`reset scan ${__dirname.split("/")[5]}`);
+    sendMessageToTelegram(`reset scan ${__dirname.split("/").pop()}`);
     await scan();
     
   }
