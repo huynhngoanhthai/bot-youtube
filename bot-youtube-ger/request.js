@@ -2,7 +2,7 @@ const requestBody = (videoId) => {
   return {
     context: {
       client: {
-        hl: "th",
+        hl: "de",
         gl: "DE",
         remoteHost: "116.102.224.213",
         deviceMake: "",

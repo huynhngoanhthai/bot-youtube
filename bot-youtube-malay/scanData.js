@@ -10,7 +10,7 @@ const getCategory = require("../utils/getCategory");
 
 
 const writeListVideoId = (listVideoId) => {
-  fs.writeFileSync(__dirname+"/listId.txt", listVideoId, (err) => {
+  fs.writeFileSync(__dirname + "/listId.txt", listVideoId, (err) => {
     if (err) {
       console.error(err);
       return;
@@ -23,7 +23,7 @@ const writeFileJSON = (text) => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate =__dirname+ `/data/${year}-${month}-${day}.json`;
+  const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
   fs.writeFileSync(formattedDate, JSON.stringify(text, null, 4), (err) => {
     if (err) {
       console.error(err);
@@ -37,7 +37,7 @@ const readFileListJSONVideos = () => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
-  const formattedDate = __dirname+`/data/${year}-${month}-${day}.json`;
+  const formattedDate = __dirname + `/data/${year}-${month}-${day}.json`;
   return new Promise((resolve, reject) => {
     fs.readFile(formattedDate, "utf8", (err, data) => {
       if (err) {
@@ -53,7 +53,7 @@ const readFileListJSONVideos = () => {
 };
 const readFileListVideoId = () => {
   return new Promise((resolve, reject) => {
-    fs.readFile(__dirname+"/listId.txt", "utf8", (err, data) => {
+    fs.readFile(__dirname + "/listId.txt", "utf8", (err, data) => {
       if (err) {
         resolve([]);
         return;
@@ -70,29 +70,30 @@ const getNumberFromComment = (text) => {
 };
 const convertDate = (text) => {
   const monthsMap = {
-    "ม.ค.": "01",
-    "ก.พ.": "02",
-    "มี.ค.": "03",
-    "เม.ย.": "04",
-    "พ.ค.": "05",
-    "มิ.ย.": "06",
-    "ก.ค.": "07",
-    "ส.ค.": "08",
-    "ก.ย.": "09",
-    "ต.ค.": "10",
-    "พ.ย.": "11",
-    "ธ.ค.": "12",
+    "Januari": "01",
+    "Februari": "02",
+    "Mac": "03",
+    "April": "04",
+    "Mei": "05",
+    "Jun": "06",
+    "Julai": "07",
+    "Ogos": "08",
+    "September": "09",
+    "Oktober": "10",
+    "November": "11",
+    "Disember": "12"
   };
+
   const dateParts = text.split(" ");
   const day = dateParts[0];
   const month = monthsMap[dateParts[1]];
   const year = dateParts[2];
   const formattedDate = `${day}-${month}-${year}`;
-  const timestamp =  moment(formattedDate, "D-M-YYYY").valueOf();
+  const timestamp = moment(formattedDate, "D-M-YYYY").valueOf();
   return timestamp;
 };
 const getNumberFromView = (text) => {
-  const numberString = text.replace(/\,/g,"").split(" ")[1];
+  const numberString = text.replace(/\,/g, "").split(" ")[1];
   // Chuyển chuỗi số thành số nguyên
   const number = parseInt(numberString, 10);
 
@@ -115,7 +116,7 @@ const checkVerified = async (link) => {
 
 const detectLanguage = async (text) => {
   const cld3 = await import('cld3');
-  const result = cld3.getLanguage(text)?.filter((i) => i?.language == 'ms' || i?.language == 'en' || i?.language == 'zh' );
+  const result = cld3.getLanguage(text)?.filter((i) => i?.language == 'ms' || i?.language == 'en' || i?.language == 'zh');
   // console.log(cld3.getLanguage(text));
   if (!result?.length == 0)
     return true;
@@ -159,17 +160,17 @@ const getShortVideoById = async (videoId) => {
 
     const avatar =
       res.data.overlay.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers
-      .reelPlayerHeaderRenderer
+        .reelPlayerHeaderRenderer
         .channelThumbnail?.thumbnails[2].url;
     const channel = res.data.overlay.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer
       .channelTitleText?.runs[0].text;
- 
+
     const origin_link = "https://www.youtube.com/shorts/" + videoId;
     let verified, lang, category;
     await Promise.all([
-        verified = await checkVerified(channel),
-        lang = await detectLanguage(title),
-        category = await getCategory(origin_link)]);
+      verified = await checkVerified(channel),
+      lang = await detectLanguage(title),
+      category = await getCategory(origin_link)]);
     return {
       title: title,
       id: videoId,
@@ -219,24 +220,24 @@ const scan = async () => {
 
     var page = await browser.newPage();
     await page.goto('https://accounts.google.com');
-  
+
     page.setDefaultNavigationTimeout(60000);
     // Điền thông tin đăng nhập vào các trường input
     await page.type('input[name="identifier"]', contains.EMAIL); // Thay 'your_email_here' bằng địa chỉ email của bạn
     await page.click('#identifierNext');
-    
+
     // Chờ trang tải xong và nhập mật khẩu
     await page.waitForNavigation();
     await page.waitForSelector('input[name="Passwd"]');
     await page.waitForTimeout(1000);
-    await page.type('input[name="Passwd"]',contains.PASSWORD ); // Thay 'your_password_here' bằng mật khẩu của bạn
+    await page.type('input[name="Passwd"]', contains.PASSWORD); // Thay 'your_password_here' bằng mật khẩu của bạn
     await page.click('#passwordNext');
-    
+
     await page.waitForNavigation();
 
-    await page.close(); 
+    await page.close();
     page = await browser.newPage();
-    await page.goto("https://www.youtube.com/shorts/"+contains.SERVER);
+    await page.goto("https://www.youtube.com/shorts/" + contains.SERVER);
     await page.waitForTimeout(1000);
     await page.waitForSelector("#thumbnail");
 
@@ -248,7 +249,7 @@ const scan = async () => {
     while (count < contains.SCANS) {
       if (countReset == 30) {
         countReset = 0;
-        await page.goto("https://www.youtube.com/shorts/"+contains.SERVER);
+        await page.goto("https://www.youtube.com/shorts/" + contains.SERVER);
         await page.waitForTimeout(1000);
         await page.waitForSelector("#thumbnail");
       }

@@ -69,33 +69,18 @@ const getNumberFromComment = (text) => {
     return number;
 };
 const convertDate = (text) => {
-    const monthsMap = {
-        "ม.ค.": "01",
-        "ก.พ.": "02",
-        "มี.ค.": "03",
-        "เม.ย.": "04",
-        "พ.ค.": "05",
-        "มิ.ย.": "06",
-        "ก.ค.": "07",
-        "ส.ค.": "08",
-        "ก.ย.": "09",
-        "ต.ค.": "10",
-        "พ.ย.": "11",
-        "ธ.ค.": "12",
-    };
-    const dateParts = text.split(" ");
-    const day = dateParts[0];
-    const month = monthsMap[dateParts[1]];
-    const year = dateParts[2];
-    const formattedDate = `${day}-${month}-${year}`;
-    const timestamp = moment(formattedDate, "D-M-YYYY").valueOf();
+    // 9 thg 7, 2023 
+    const day = text.split(" ")[0];
+    const month = text.replace(/\,/g, "").split(" ")[2];
+    const year = text.split(" ").pop();
+    const formattedDate = `${day }-${month}-${year}`;
+    const timestamp = moment(formattedDate, "DD-MM-YYYY").valueOf();
     return timestamp;
 };
 const getNumberFromView = (text) => {
-    const numberString = text.replace(/\,/g, "").split(" ")[1];
-    // Chuyển chuỗi số thành số nguyên
+    //527.413 lượt xem
+    const numberString = text.replace(/\./g, "").split(" ")[0];
     const number = parseInt(numberString, 10);
-
     return number;
 };
 const checkVerified = async (link) => {

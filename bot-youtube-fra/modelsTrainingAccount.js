@@ -62,25 +62,26 @@ const readFileListVideoId = () => {
     });
 };
 const getNumberFromComment = (text) => {
-    const numberString = text.replace(/\,/g, "").split(" ")[1];
+    const numberString = text.split(" ")[1].replace(/\s/g, "");
     const number = parseInt(numberString, 10);
     return number;
 };
 const convertDate = (text) => {
     const monthsMap = {
-        "ม.ค.": "01",
-        "ก.พ.": "02",
-        "มี.ค.": "03",
-        "เม.ย.": "04",
-        "พ.ค.": "05",
-        "มิ.ย.": "06",
-        "ก.ค.": "07",
-        "ส.ค.": "08",
-        "ก.ย.": "09",
-        "ต.ค.": "10",
-        "พ.ย.": "11",
-        "ธ.ค.": "12",
+        "janvier": "01",
+        "février": "02",
+        "mars": "03",
+        "avril": "04",
+        "mai": "05",
+        "juin": "06",
+        "juillet": "07",
+        "août": "08",
+        "septembre": "09",
+        "octobre": "10",
+        "novembre": "11",
+        "décembre": "12"
     };
+    
     const dateParts = text.split(" ");
     const day = dateParts[0];
     const month = monthsMap[dateParts[1]];
@@ -90,9 +91,9 @@ const convertDate = (text) => {
     return timestamp;
 };
 const getNumberFromView = (text) => {
-    const numberString = text.replace(/\,/g, "").split(" ")[1];
+    const views = parseInt(text.replace(/\s/g, "").replace("vues", ""));
     // Chuyển chuỗi số thành số nguyên
-    const number = parseInt(numberString, 10);
+    const number = parseInt(views, 10);
 
     return number;
 };

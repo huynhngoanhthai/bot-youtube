@@ -69,30 +69,13 @@ const getNumberFromComment = (text) => {
     return number;
 };
 const convertDate = (text) => {
-    const monthsMap = {
-        "ม.ค.": "01",
-        "ก.พ.": "02",
-        "มี.ค.": "03",
-        "เม.ย.": "04",
-        "พ.ค.": "05",
-        "มิ.ย.": "06",
-        "ก.ค.": "07",
-        "ส.ค.": "08",
-        "ก.ย.": "09",
-        "ต.ค.": "10",
-        "พ.ย.": "11",
-        "ธ.ค.": "12",
-    };
-    const dateParts = text.split(" ");
-    const day = dateParts[0];
-    const month = monthsMap[dateParts[1]];
-    const year = dateParts[2];
-    const formattedDate = `${day}-${month}-${year}`;
+ 
+    const formattedDate = text.replace(/(\d{4})年(\d{1,2})月(\d{1,2})日/, '$3-$2-$1');
     const timestamp = moment(formattedDate, "D-M-YYYY").valueOf();
     return timestamp;
 };
 const getNumberFromView = (text) => {
-    const numberString = text.replace(/\,/g, "").split(" ")[1];
+    const numberString = text.replace(/\,/g, "").split("次观看")[0];
     // Chuyển chuỗi số thành số nguyên
     const number = parseInt(numberString, 10);
 
